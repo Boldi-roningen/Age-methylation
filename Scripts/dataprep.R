@@ -1,17 +1,15 @@
 library(readxl)
-library(data.table)
 
 #peregrin directory path
-directory_path <- "./Raw_data/methyl_male_no_w/"
+directory_path <- "/scratch/s5678684/Raw_data/methyl_male_no_w/"
 
 # Initialize an empty list to store the data frames
 cov_data_list <- list()
 
 # Loop through files, read data, add Sample column, and set column names
-#randomly sample and extract:
 for (i in 1:100) {
   file_path <- paste0(directory_path, "S", i, ".deduplicated.bismark.cov.gz")
-  cov_data <- read.delim(file_path, skip = 4.5*10^6, nrows = 101)
+  cov_data <- read.delim(file_path)
   cov_data$Sample <- as.character(i)
   
   # Set column names
@@ -22,7 +20,7 @@ for (i in 1:100) {
 
 # Combine the data frames into a single data frame
 CovN <- do.call(rbind, cov_data_list)
-CovN
+
 # Replace Chromosome names
 CovN[CovN == "NC_063213.1"] <- "1"
 CovN[CovN == "NC_063214.1"] <- "2"
@@ -72,11 +70,11 @@ CovN[CovN == "NC_026783.1"] <- "MT"
 # Make coverage column
 CovN$Coverage<- CovN$CountMethylated+CovN$CountNonMethylated
 
-saveRDS(CovN, "./Results/Cov_ZF_2024_MalesnoW.rds")
-CovN
-number <- nrow(CovN)
-list <- sample(number, 100)
-extract <- CovN[list, ]
-extract
-merge_Covn <- merge(CovN, info, by = "Sample")
+saveRDS(CovN, "/project/s5678684/Results/Cov_ZF_2024_MalesnoW.rds")
 
+#Reduced table with random extracts
+set.seed(123)
+number <- nrow(CovN)
+random_numbers <- sample(number, 1e+05, replace = FALSE)
+CovN_extract <- CovN[random_numbers, ]
+saveRDS(CovN_extract, "/project/s5678684/Results/Cov_ZF_2024_MalesnoW_Subset.rds")

@@ -53,8 +53,8 @@ ridge_model <- train(AgeCollectionDays ~ .,
                      method = "glmnet", 
                      trControl = fitControl, 
                      tuneGrid = data.frame(
-                     alpha = 0,
-                     lambda = 10^seq(-3, 3, length = 100)), 
+                       alpha = 0,
+                       lambda = 10^seq(-3, 3, length = 100)), 
                      tuneLength = 10)
 
 lasso_model <- train(AgeCollectionDays ~ ., 
